@@ -12,7 +12,7 @@ import bs4
 
 from .util import force_text
 
-EXCLUDE_TAGS = set(["pre", "script", "textarea"])
+EXCLUDE_TAGS = set(["pre", "script", "textarea","code"])
 IGNORE_EXCLUSION_TAGS = {"script":
 	{"type":"text/ng-template"}
 }
