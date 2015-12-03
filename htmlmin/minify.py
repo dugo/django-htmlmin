@@ -13,6 +13,10 @@ import bs4
 from .util import force_text
 
 EXCLUDE_TAGS = set(["pre", "script", "textarea"])
+IGNORE_EXCLUSION_TAGS = {"script":
+	{"type":"text/ng-template"}
+}
+
 # element list coming from
 # https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/HTML5_element_list
 # combining text-level semantics & edits
@@ -60,8 +64,14 @@ def space_minify(soup, ignore_comments=True):
     :type ignore_comments: bool
     """
     # if tag excluded from minification, just pass
-    if str(soup.name) in EXCLUDE_TAGS:
-        return
+    tagname = str(soup.name)
+    if tagname in EXCLUDE_TAGS:
+        if not tagname in IGNORE_EXCLUSION_TAGS:
+            return
+
+        for attr in IGNORE_EXCLUSION_TAGS[tagname]:
+            if not soup.get(attr,False) or soup[attr].lower() != IGNORE_EXCLUSION_TAGS[tagname][attr]:
+                return
 
     # loop through childrens of this element
     if hasattr(soup, 'children'):
